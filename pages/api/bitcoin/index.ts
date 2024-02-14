@@ -22,7 +22,8 @@ const handler = async (req: any, res: any) => {
       privateKey: privateKey.toString(),
       publicKey: publicKey.toString(),
       address: address.toString(),
-      type: "bitcoin"
+      type: "bitcoin",
+      network: network 
     });
   } catch (error: any) {
     return res.status(500).json({ error: error.message });

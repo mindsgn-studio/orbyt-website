@@ -1,9 +1,7 @@
 import React from "react";
 import type { NextPage } from "next";
-import { Main } from "../components";
 import { Box, Container, Text, Heading } from "@chakra-ui/react";
 import Head from "next/head";
-import { appIcons as AppIcon } from "../components/appIcon";
 
 const Privacy: NextPage = () => {
   return (
