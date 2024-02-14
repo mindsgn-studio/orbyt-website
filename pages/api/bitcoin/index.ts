@@ -10,15 +10,17 @@ const handler = async (req: any, res: any) => {
       throw new Error('Invalid network parameter');
     }
 
+    //@ts-expect-error
     const privateKey = new PrivateKey(Networks[network]);
-    const publicKey = new PublicKey(privateKey);
+    const publicKey = new PublicKey(`${privateKey}`);
+    //@ts-expect-error
     const address = privateKey.toAddress(Networks[network]);
 
     return res.status(200).json({
       nmemonic: null,
-      privateKey: privateKey.toString({ compressed: false }),
-      publicKey: publicKey.toString({ compressed: false }),
-      address: address.toString({ compressed: false })
+      privateKey: privateKey.toString(),
+      publicKey: publicKey.toString(),
+      address: address.toString()
     });
   } catch (error: any) {
     return res.status(500).json({ error: error.message });

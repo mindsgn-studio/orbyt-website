@@ -27,6 +27,7 @@
     "@tailwindcss/line-clamp": "^0.3.1",
     "@tailwindcss/typography": "^0.5.2",
     "@types/bcryptjs": "^2.4.2",
+    "@types/bitcore-lib": "^0.15.6",
     "@types/jest": "^29.5.12",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/supertest": "^6.0.2",
