@@ -1,58 +1,56 @@
+import { Transaction, PrivateKey, Address } from 'bitcore-lib';
+const fetch = require('node-fetch');
 
 const handler = async (req: any, res: any) => {
   try {
     const { query } = req;
-    const {privateKey, senderAddress, amount, network, recipientAddress } = query
+    const { privateKey, senderAddress, amount, network, recipientAddress } = query;
 
-    if(!privateKey || !amount || !network || !recipientAddress || !senderAddress ){
-      throw new Error('Invalid network parameter');
+    if (!privateKey || !senderAddress || !amount || !network || !recipientAddress) {
+      throw new Error('Missing required parameters');
     }
 
-    if(network === "testnet"){
+    if (network === 'testnet') {
       const apiUrl = `https://blockstream.info/testnet/api/address/${senderAddress}/utxo`;
-      
-      fetch(apiUrl)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-            return response.json();
+
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error('Failed to fetch UTXOs');
+      }
+
+      const utxos = await response.json();
+      if (utxos.length === 0) {
+        throw new Error('No UTXOs found for senderAddress');
+      }
+
+      // const privateKeyObj = PrivateKey.fromString(privateKey);
+      // const senderAddressObj = Address.fromString(senderAddress);
+
+      const previousTxids = utxos.map(utxo => utxo.txid);
+
+      const transaction = new Transaction()
+        .from({
+          address: senderAddress,
+          utxos: [{
+            txId: previousTxids[previousTxids.length - 1],
+            outputIndex: 0,
+            satoshis: 1000000000,
+            script: senderAddress
+          }],
+          script: senderAddress
         })
-        .then(data => {
-          const utxos = data;
-          
-          if(utxos.length===0){
-            throw new Error('Top up your address');
-          }
+        .to(Address.fromString(recipientAddress), 1000000) /
+        .change(senderAddress)
+        .sign(privateKey);
 
-          const previousTxids = utxos.map(utxo => utxo.txid);
-          console.log('Previous Txids:', previousTxids);
+      console.log('Transaction:', transaction.serialize());
 
-          /*const transaction = new Transaction()
-          .from({
-            address: senderAddress,
-            utxos: [{
-              txId: previousTxids,
-              outputIndex: 0,
-              satoshis: 10000, 
-              script: senderAddress.toScript()
-            }],
-            script: senderAddress.toScript()
-          })
-          .to(recipientAddress, 5000) 
-          .change(senderAddress)
-          .sign(privateKey); 
-          */
-
-          return res.status(200).json({});
-        })
-        .catch(error => {
-          throw new Error(error.message);
-        });
+      return res.status(200).json({ success: true });
+    } else {
+      throw new Error('Invalid network');
     }
-
-    // throw new Error('Network response was not ok');
   } catch (error: any) {
+    console.error('Error:', error);
     return res.status(500).json({ error: error.message });
   }
 };
