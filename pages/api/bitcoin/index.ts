@@ -12,7 +12,8 @@ const handler = async (req: any, res: any) => {
 
     //@ts-expect-error
     const privateKey = new PrivateKey(Networks[network]);
-    const publicKey = new PublicKey(`${privateKey}`);
+    //@ts-expect-error
+    const publicKey = new PublicKey(privateKey);
     //@ts-expect-error
     const address = privateKey.toAddress(Networks[network]);
 
