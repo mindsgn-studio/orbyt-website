@@ -6,7 +6,7 @@ const handler = async (req: any, res: any) => {
     const { query, socket } = req;
     const { network } = query;
 
-    if (!network || !(network in Networks)) {
+    if (!network) {
       throw new Error('Invalid network parameter');
     }
 
@@ -21,7 +21,8 @@ const handler = async (req: any, res: any) => {
       nmemonic: null,
       privateKey: privateKey.toString(),
       publicKey: publicKey.toString(),
-      address: address.toString()
+      address: address.toString(),
+      type: "bitcoin"
     });
   } catch (error: any) {
     return res.status(500).json({ error: error.message });
