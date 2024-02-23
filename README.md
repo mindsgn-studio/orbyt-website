@@ -1,11 +1,14 @@
-# cross-chain 
+# Orbyt
 
-## Getting Started
+## Supported
 
-First, run the development server:
+### Bitcoin
+- [x] Create new wallet
+- [ ] Recover wallet
+- [ ] Send
+- [ ] Recieve
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+### Ethereum
+- [ ] Create new wallet
+- [ ] Recover wallet
+- [ ] Send
